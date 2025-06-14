@@ -1,4 +1,4 @@
-name: Build and deploy Next.js app to Azure Web App
+name: Build and deploy Next.js app to Ubuntu Server
 
 on:
   push:
@@ -6,12 +6,8 @@ on:
       - main  
   workflow_dispatch:
 
-env:
-  APPLICATION_PUBLISH_PROFILE: ${{ secrets.PRIVATE_KEY }}
-  WEBAPP_NAME: "random"
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -32,18 +28,15 @@ jobs:
       - name: Build Next.js app
         run: npm run build
         
-      - name: Prepare deployment package
-        run: |
-          # Copy standalone output for deployment
-          cp -r .next/standalone ./deploy
-          cp -r .next/static ./deploy/.next/static
-          cp -r public ./deploy/public
-          
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+      - name: Deploy to Ubuntu Server
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          app-name: ${{ env.WEBAPP_NAME }}
-          slot-name: "Production"
-          publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./deploy
+          host: 40.81.229.156
+          username: anshu
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd /var/www/your-app
+            git pull origin main
+            npm ci
+            npm run build
+            pm2 restart your-app || pm2 start npm --name "your-app" -- start
