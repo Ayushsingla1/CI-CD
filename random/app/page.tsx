@@ -1,6 +1,9 @@
-import Image from "next/image";
 
-export default function Home() {
 
-  return <div classname = "flex w-screen h-screen justify-center items-center">hi there</div>
+const Home = () => {
+
+  return <div className="flex w-screen h-screen justify-center items-center bg-black text-white text-xl">hi there</div>
 }
+
+
+export default Home;
