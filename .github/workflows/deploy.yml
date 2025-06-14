@@ -35,8 +35,8 @@ jobs:
           username: anshu
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd /var/www/your-app
+            cd ~/CI-CD
             git pull origin main
             npm ci
             npm run build
-            pm2 restart your-app || pm2 start npm --name "your-app" -- start
+            pm2 restart random || pm2 start npm --name random -- start
